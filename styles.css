@@ -1,0 +1,12 @@
+#map {
+    height: 600px;
+    width: 100%;
+  }
+  
+  .container-fluid {
+    padding: 20px;
+  }
+  
+  .table {
+    margin-top: 20px;
+  }

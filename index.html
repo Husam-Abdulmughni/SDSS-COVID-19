@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Spatial Decision Support System for COVID-19 Infection Prevention</title>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-md-12">
+        <h1 class="text-center">Spatial Decision Support System for COVID-19 Infection Prevention</h1>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-3">
+        <div class="form-group">
+          <label for="districtSelect">Select District:</label>
+          <select class="form-control" id="districtSelect"></select>
+        </div>
+        <div class="form-group">
+          <label for="yearSelect">Select Year:</label>
+          <select class="form-control" id="yearSelect"></select>
+        </div>
+        <div class="form-group">
+          <label for="monthSelect">Select Month:</label>
+          <select class="form-control" id="monthSelect"></select>
+        </div>
+        <button class="btn btn-primary" id="submitBtn">Submit</button>
+      </div>
+      <div class="col-md-9">
+        <div id="map"></div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-12">
+        <h3>District Data</h3>
+        <table class="table table-bordered" id="dataTable">
+          <thead>
+            <tr>
+              <th>District</th>
+              <th>Year</th>
+              <th>Month</th>
+              <th>COVID-19 Cases</th>
+              <th>Hospitals</th>
+              <th>Beds</th>
+              <!-- Add more columns as needed -->
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+  <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>
