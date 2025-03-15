@@ -17,18 +17,23 @@ const baseLayers = {
 };
 L.control.layers(baseLayers).addTo(map);
 
+// Variable to store the district layer
+let districtLayer;
+
 // Load the shapefile (GeoJSON) and extract district names
 fetch('Data/Shapefile.geojson')
   .then(response => response.json())
   .then(data => {
-    const districts = data.features.map(feature => feature.properties.district); // Replace 'district' with the correct property name
+    // Extract district names from the GeoJSON file
+    const districts = data.features.map(feature => feature.properties.District);
     populateDistrictDropdown(districts);
 
     // Add the district layer to the map
     districtLayer = L.geoJSON(data, {
-      style: { color: 'blue', weight: 2 },
+      style: { color: 'blue', weight: 2 }, // Default style for districts
       onEachFeature: (feature, layer) => {
-        layer.bindPopup(`<b>${feature.properties.district}</b>`); // Replace 'district' with the correct property name
+        // Add a popup with the district name
+        layer.bindPopup(`<b>${feature.properties.District}</b>`);
       }
     }).addTo(map);
   })
@@ -48,13 +53,14 @@ function populateDistrictDropdown(districts) {
 // Function to highlight the selected district
 function highlightDistrict(selectedDistrict) {
   if (districtLayer) {
-    districtLayer.setStyle({ color: 'blue', weight: 2 }); // Reset the style of previously highlighted district
+    // Reset the style of all districts
+    districtLayer.setStyle({ color: 'blue', weight: 2 });
   }
 
+  // Highlight the selected district
   districtLayer.eachLayer(layer => {
-    if (layer.feature.properties.district === selectedDistrict) { // Replace 'district' with the correct property name
-      layer.setStyle({ color: 'red', weight: 4 }); // Highlight the selected district
-      districtLayer = layer; // Store the highlighted layer
+    if (layer.feature.properties.District === selectedDistrict) {
+      layer.setStyle({ color: 'red', weight: 4 }); // Highlight style
       map.fitBounds(layer.getBounds()); // Zoom to the selected district
     }
   });
