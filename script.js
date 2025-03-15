@@ -1,5 +1,5 @@
-// Initialize the map and set the view to Maharashtra
-const map = L.map('map').setView([19.7515, 75.7139], 6); // Centered on Maharashtra
+// Initialize the map
+const map = L.map('map').setView([20.5937, 78.9629], 5); // Centered on India
 
 // Add base layers
 const osm = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -17,66 +17,51 @@ const baseLayers = {
 };
 L.control.layers(baseLayers).addTo(map);
 
-// Load study area GeoJSON
-let studyAreaLayer;
-let riskLayer;
-
-fetch('C:/Users/kannan/OneDrive/Documents/GitHub/SDSS-COVID-19/Data/Maharashtra_base.geojson') // Update the path to your GeoJSON file
+// Load the shapefile (GeoJSON) and extract district names
+fetch('Data/Shapefile.geojson')
   .then(response => response.json())
   .then(data => {
-    studyAreaLayer = L.geoJSON(data, {
-      style: { color: 'green', weight: 2, fillOpacity: 0.1 },
-      onEachFeature: (feature, layer) => {
-        const districtName = feature.properties.District.trim(); // Trim to remove extra spaces or newlines
-        // Add district name to the dropdown
-        $('#districtSelect').append(`<option value="${districtName}">${districtName}</option>`);
+    const districts = data.features.map(feature => feature.properties.district); // Replace 'district' with the correct property name
+    populateDistrictDropdown(districts);
 
-        // Add popup with district info
-        layer.bindPopup(`<b>${districtName}</b>`);
+    // Add the district layer to the map
+    districtLayer = L.geoJSON(data, {
+      style: { color: 'blue', weight: 2 },
+      onEachFeature: (feature, layer) => {
+        layer.bindPopup(`<b>${feature.properties.district}</b>`); // Replace 'district' with the correct property name
       }
     }).addTo(map);
-
-    // Fit the map to the bounds of the study area
-    map.fitBounds(studyAreaLayer.getBounds());
   })
   .catch(error => console.error('Error loading GeoJSON:', error));
 
-// Handle district selection
-$('#submitBtn').click(function () {
-  const selectedDistrict = $('#districtSelect').val();
-  const selectedMonth = $('#monthSelect').val();
-  const selectedYear = $('#yearSelect').val();
+// Function to populate the district dropdown
+function populateDistrictDropdown(districts) {
+  const districtSelect = document.getElementById('districtSelect');
+  districts.forEach(district => {
+    const option = document.createElement('option');
+    option.value = district;
+    option.textContent = district;
+    districtSelect.appendChild(option);
+  });
+}
 
-  if (!selectedDistrict || !selectedMonth || !selectedYear) return; // Do nothing if no district, month, or year is selected
+// Function to highlight the selected district
+function highlightDistrict(selectedDistrict) {
+  if (districtLayer) {
+    districtLayer.setStyle({ color: 'blue', weight: 2 }); // Reset the style of previously highlighted district
+  }
 
-  // Load the risk map GeoJSON file based on the selected year
-  fetch(`C:/Users/kannan/OneDrive/Documents/GitHub/SDSS-COVID-19/Data/Maharashtra_Riskmap_${selectedYear}.geojson`)
-    .then(response => response.json())
-    .then(data => {
-      if (riskLayer) {
-        map.removeLayer(riskLayer);
-      }
+  districtLayer.eachLayer(layer => {
+    if (layer.feature.properties.district === selectedDistrict) { // Replace 'district' with the correct property name
+      layer.setStyle({ color: 'red', weight: 4 }); // Highlight the selected district
+      districtLayer = layer; // Store the highlighted layer
+      map.fitBounds(layer.getBounds()); // Zoom to the selected district
+    }
+  });
+}
 
-      riskLayer = L.geoJSON(data, {
-        style: (feature) => {
-          const riskLevel = feature.properties[`risk_${selectedMonth}`];
-          let color = 'green'; // Default to low risk
-          if (riskLevel === 'medium') {
-            color = 'yellow';
-          } else if (riskLevel === 'high') {
-            color = 'red';
-          }
-          return { color: color, weight: 2, fillOpacity: 0.5 };
-        },
-        onEachFeature: (feature, layer) => {
-          if (feature.properties.District.trim() === selectedDistrict) {
-            // Zoom to the selected district
-            map.fitBounds(layer.getBounds());
-            // Highlight the selected district
-            layer.setStyle({ weight: 4, fillOpacity: 0.7 });
-          }
-        }
-      }).addTo(map);
-    })
-    .catch(error => console.error('Error loading risk map GeoJSON:', error));
+// Handle the submit button click
+document.getElementById('submitBtn').addEventListener('click', () => {
+  const selectedDistrict = document.getElementById('districtSelect').value;
+  highlightDistrict(selectedDistrict);
 });
