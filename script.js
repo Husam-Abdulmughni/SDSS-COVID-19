@@ -19,15 +19,24 @@ L.control.layers(baseLayers).addTo(map);
 
 // Variable to store the district layer
 let districtLayer;
-let riskData;
+let riskDataByYear = {};
 
-// Load both GeoJSON files
+// Load all GeoJSON files
 Promise.all([
     fetch('Data/Maharashtra_base.geojson').then(response => response.json()),
-    fetch('Data/Maharashtra_Riskmap_2020.geojson').then(response => response.json())
+    fetch('Data/Maharashtra_Riskmap_2020.geojson').then(response => response.json()),
+    fetch('Data/Maharashtra_Riskmap_2021.geojson').then(response => response.json()),
+    fetch('Data/Maharashtra_Riskmap_2022.geojson').then(response => response.json()),
+    fetch('Data/Maharashtra_Riskmap_2023.geojson').then(response => response.json())
 ])
-.then(([baseData, riskMapData]) => {
-    riskData = riskMapData;
+.then(([baseData, risk2020, risk2021, risk2022, risk2023]) => {
+    // Store risk data by year
+    riskDataByYear = {
+        '2020': risk2020,
+        '2021': risk2021,
+        '2022': risk2022,
+        '2023': risk2023
+    };
     
     // Extract district names from the base GeoJSON file
     const districts = baseData.features.map(feature => feature.properties.District);
@@ -77,8 +86,8 @@ function getRiskColor(risk) {
 }
 
 // Update the highlightDistrict function
-function highlightDistrict(selectedDistrict, selectedMonth) {
-    if (!districtLayer || !riskData) return;
+function highlightDistrict(selectedDistrict, selectedMonth, selectedYear) {
+    if (!districtLayer || !riskDataByYear[selectedYear]) return;
 
     // Reset all districts style
     districtLayer.setStyle({
@@ -87,8 +96,8 @@ function highlightDistrict(selectedDistrict, selectedMonth) {
         fillOpacity: 0.2
     });
 
-    // Find risk data for selected district
-    const districtRiskData = riskData.features.find(
+    // Find risk data for selected district and year
+    const districtRiskData = riskDataByYear[selectedYear].features.find(
         feature => feature.properties.District === selectedDistrict
     );
 
@@ -107,6 +116,7 @@ function highlightDistrict(selectedDistrict, selectedMonth) {
                 });
                 layer.bindPopup(`
                     <b>${selectedDistrict}</b><br>
+                    Year: ${selectedYear}<br>
                     Month: ${selectedMonth}<br>
                     Risk Level: ${risk || 'No data'}
                 `).openPopup();
@@ -120,5 +130,6 @@ function highlightDistrict(selectedDistrict, selectedMonth) {
 document.getElementById('submitBtn').addEventListener('click', () => {
     const selectedDistrict = document.getElementById('districtSelect').value;
     const selectedMonth = document.getElementById('monthSelect').value;
-    highlightDistrict(selectedDistrict, selectedMonth);
+    const selectedYear = document.getElementById('yearSelect').value;
+    highlightDistrict(selectedDistrict, selectedMonth, selectedYear);
 });
