@@ -25,7 +25,7 @@ fetch('Data/Maharashtra_base.geojson')
   .then(response => response.json())
   .then(data => {
     // Extract district names from the GeoJSON file
-    const districts = data.features.map(feature => feature.properties.district);
+    const districts = data.features.map(feature => feature.properties.District);  // Changed from district to District
     
     // Sort districts alphabetically
     districts.sort();
@@ -42,7 +42,7 @@ fetch('Data/Maharashtra_base.geojson')
       },
       onEachFeature: (feature, layer) => {
         // Add a popup with the district name
-        layer.bindPopup(`<b>${feature.properties.district}</b>`);
+        layer.bindPopup(`<b>${feature.properties.District}</b>`);  // Changed from district to District
       }
     }).addTo(map);
 
@@ -74,7 +74,7 @@ function highlightDistrict(selectedDistrict) {
 
   // Highlight the selected district
   districtLayer.eachLayer(layer => {
-    if (layer.feature.properties.district === selectedDistrict) {
+    if (layer.feature.properties.District === selectedDistrict) {  // Changed from district to District
       layer.setStyle({
         color: 'red',
         weight: 4,
