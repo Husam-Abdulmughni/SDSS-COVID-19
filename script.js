@@ -58,6 +58,7 @@ Promise.all([
     
     populateDistrictDropdown(districts);
 
+    // Initialize district layer here only
     districtLayer = L.geoJSON(baseData, {
         style: {
             color: '#2c3e50',
@@ -77,7 +78,6 @@ Promise.all([
                 mouseout: (e) => {
                     districtLayer.resetStyle(e.target);
                 },
- changes                // Remove the click event that was auto-selecting districts
                 click: (e) => {
                     layer.bindPopup(`<b>${e.target.feature.properties.District}</b>`).openPopup();
                 }
@@ -86,7 +86,9 @@ Promise.all([
     }).addTo(map);
 
     map.fitBounds(districtLayer.getBounds());
-})
+});
+
+// Remove the duplicate district layer initialization at the bottom
 .catch(error => {
     console.error('Error loading data:', error);
     alert(`Error: ${error.message}. Please check your internet connection and try again.`);
@@ -195,17 +197,3 @@ document.getElementById('submitBtn').addEventListener('click', () => {
     }
     highlightDistrict(selectedDistrict, selectedMonth, selectedYear);
 });
-
-// Modify the initial district layer setup
-districtLayer = L.geoJSON(baseData, {
-    style: {
-        color: '#2c3e50',
-        weight: 2,
-        fillOpacity: 0.2,
-        fillColor: '#3498db'
-    },
-    onEachFeature: (feature, layer) => {
-        // Only show district name on hover
-        layer.bindPopup(`<b>${feature.properties.District}</b>`);
-    }
-}).addTo(map);
