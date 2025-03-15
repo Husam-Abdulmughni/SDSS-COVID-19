@@ -22,13 +22,33 @@ let districtLayer;
 
 // Load the Maharashtra GeoJSON file and extract district names
 fetch('Data/Maharashtra_base.geojson')
-  .then(response => response.json())
+  .then(response => {
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+    return response.json();
+  })
   .then(data => {
+    console.log('GeoJSON data:', data); // Debug: Check loaded data
+    
+    if (!data.features || !data.features.length) {
+      throw new Error('No features found in GeoJSON');
+    }
+
     // Extract district names from the GeoJSON file
-    const districts = data.features.map(feature => feature.properties.District);  // Changed from district to District
+    const districts = data.features.map(feature => {
+      console.log('Feature properties:', feature.properties); // Debug: Check each feature
+      return feature.properties.District;
+    }).filter(district => district); // Remove any undefined or null values
+    
+    console.log('Extracted districts:', districts); // Debug: Check extracted districts
     
     // Sort districts alphabetically
     districts.sort();
+    
+    // Clear existing options in dropdown
+    const districtSelect = document.getElementById('districtSelect');
+    districtSelect.innerHTML = '<option value="">--Select a district--</option>';
     
     // Populate dropdown with district names
     populateDistrictDropdown(districts);
@@ -41,15 +61,17 @@ fetch('Data/Maharashtra_base.geojson')
         fillOpacity: 0.2
       },
       onEachFeature: (feature, layer) => {
-        // Add a popup with the district name
-        layer.bindPopup(`<b>${feature.properties.District}</b>`);  // Changed from district to District
+        layer.bindPopup(`<b>${feature.properties.District}</b>`);
       }
     }).addTo(map);
 
     // Fit the map view to Maharashtra boundaries
     map.fitBounds(districtLayer.getBounds());
   })
-  .catch(error => console.error('Error loading GeoJSON:', error));
+  .catch(error => {
+    console.error('Error loading or processing GeoJSON:', error);
+    alert('Error loading district data. Please check the console for details.');
+  });
 
 // Function to populate the district dropdown
 function populateDistrictDropdown(districts) {

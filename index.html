@@ -3,27 +3,23 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Maharashtra District Map</title>
-    <!-- Leaflet CSS -->
+    <title>Spatial Decision Support System for COVID-19</title>
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <div class="container">
-        <h1>Maharashtra District Map</h1>
-        <div class="controls">
-            <div class="select-container">
-                <label for="districtSelect">Select District:</label>
-                <select id="districtSelect">
-                    <option value="">--Select a district--</option>
-                </select>
-            </div>
-            <button id="submitBtn">Show District</button>
+        <h1>Spatial Decision Support System for COVID-19 Infection Prevention</h1>
+        <div class="control-panel">
+            <label for="districtSelect">Select District:</label>
+            <select id="districtSelect">
+                <option value="">--Select a district--</option>
+            </select>
+            <button id="submitBtn">Submit</button>
         </div>
         <div id="map"></div>
     </div>
-    
-    <!-- Leaflet JS -->
+
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <script src="script.js"></script>
 </body>
