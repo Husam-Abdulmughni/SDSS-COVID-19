@@ -17,16 +17,16 @@ const baseLayers = {
 };
 L.control.layers(baseLayers).addTo(map);
 
-// Load Maharashtra districts GeoJSON
-let districtLayer;
+// Load study area GeoJSON
+let studyAreaLayer;
 
 fetch('data/Shapefile.geojson') // Update the path to your GeoJSON file
   .then(response => response.json())
   .then(data => {
-    districtLayer = L.geoJSON(data, {
-      style: { color: 'blue', weight: 2, fillOpacity: 0.1 },
+    studyAreaLayer = L.geoJSON(data, {
+      style: { color: 'green', weight: 2, fillOpacity: 0.1 },
       onEachFeature: (feature, layer) => {
-        const districtName = feature.properties.District; // Use 'District' (capitalized)
+        const districtName = feature.properties.District.trim(); // Trim to remove extra spaces or newlines
         // Add district name to the dropdown
         $('#districtSelect').append(`<option value="${districtName}">${districtName}</option>`);
 
@@ -35,8 +35,8 @@ fetch('data/Shapefile.geojson') // Update the path to your GeoJSON file
       }
     }).addTo(map);
 
-    // Fit the map to the bounds of Maharashtra
-    map.fitBounds(districtLayer.getBounds());
+    // Fit the map to the bounds of the study area
+    map.fitBounds(studyAreaLayer.getBounds());
   })
   .catch(error => console.error('Error loading GeoJSON:', error));
 
@@ -45,15 +45,15 @@ $('#submitBtn').click(function () {
   const selectedDistrict = $('#districtSelect').val();
   if (!selectedDistrict) return; // Do nothing if no district is selected
 
-  districtLayer.eachLayer(layer => {
-    if (layer.feature.properties.District === selectedDistrict) {
+  studyAreaLayer.eachLayer(layer => {
+    if (layer.feature.properties.District.trim() === selectedDistrict) {
       // Zoom to the selected district
       map.fitBounds(layer.getBounds());
       // Highlight the selected district
       layer.setStyle({ color: 'red', weight: 4, fillOpacity: 0.3 });
     } else {
       // Reset the style for other districts
-      layer.setStyle({ color: 'blue', weight: 2, fillOpacity: 0.1 });
+      layer.setStyle({ color: 'green', weight: 2, fillOpacity: 0.1 });
     }
   });
 });
