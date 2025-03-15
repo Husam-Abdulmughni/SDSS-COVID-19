@@ -120,8 +120,7 @@ function highlightDistrict(selectedDistrict, selectedMonth, selectedYear) {
         return;
     }
 
-    if (!districtLayer || !riskDataByYear[selectedYear]) return;
-
+    // Reset all districts to default style
     districtLayer.setStyle({
         color: '#2c3e50',
         weight: 2,
@@ -143,8 +142,10 @@ function highlightDistrict(selectedDistrict, selectedMonth, selectedYear) {
 
         const riskColor = getRiskColor(displayRisk);
 
+        // Highlight selected district
         districtLayer.eachLayer(layer => {
             if (layer.feature.properties.District === selectedDistrict) {
+                // Apply highlighting
                 layer.setStyle({
                     color: '#34495e',
                     weight: 4,
@@ -152,38 +153,45 @@ function highlightDistrict(selectedDistrict, selectedMonth, selectedYear) {
                     fillOpacity: 0.7
                 });
                 
+                // Close existing popup if any
                 if (currentPopup) {
                     map.closePopup(currentPopup);
                 }
 
+                // Create detailed popup
                 const popupContent = `
                     <div class="popup-content">
                         <h3>${selectedDistrict}</h3>
                         <p><strong>Year:</strong> ${selectedYear}</p>
                         <p><strong>Month:</strong> ${selectedMonth}</p>
-                        <p><strong>Risk Level:</strong> <span style="color:${riskColor}">${displayRisk}</span></p>
+                        <p><strong>Risk Level:</strong> <span style="color:${riskColor}; font-weight: bold;">${displayRisk}</span></p>
                     </div>
                 `;
                 
+                // Show popup
                 currentPopup = layer.bindPopup(popupContent, {
                     closeButton: true,
-                    className: 'custom-popup'
+                    className: 'custom-popup',
+                    autoPan: true
                 }).openPopup();
 
+                // Zoom to district
                 map.fitBounds(layer.getBounds(), {
-                    padding: [50, 50]
+                    padding: [50, 50],
+                    maxZoom: 10
                 });
             }
         });
     }
 }
 
+// Update getRiskColor function for better visibility
 function getRiskColor(risk) {
     switch(risk) {
-        case 'High': return '#e74c3c';
-        case 'Medium': return '#f1c40f';
-        case 'Low': return '#2ecc71';
-        case 'No data': return '#95a5a6';
+        case 'High': return '#dc3545';   // Darker red
+        case 'Medium': return '#ffc107'; // Darker yellow
+        case 'Low': return '#28a745';    // Darker green
+        case 'No data': return '#6c757d'; // Darker gray
         default: return '#3498db';
     }
 }
