@@ -202,3 +202,40 @@ footer {
         font-size: 20px;
     }
 }
+
+.popup-content {
+    padding: 10px;
+    min-width: 200px;
+}
+
+.popup-content h3 {
+    color: #2c3e50;
+    margin-bottom: 10px;
+    font-size: 16px;
+    border-bottom: 1px solid #eee;
+    padding-bottom: 5px;
+}
+
+.popup-content p {
+    margin: 5px 0;
+    font-size: 14px;
+    line-height: 1.4;
+}
+
+.popup-content strong {
+    color: #34495e;
+}
+
+.custom-popup .leaflet-popup-content-wrapper {
+    border-radius: 8px;
+    box-shadow: 0 3px 10px rgba(0,0,0,0.2);
+}
+
+.custom-popup .leaflet-popup-tip {
+    box-shadow: 0 3px 6px rgba(0,0,0,0.2);
+}
+
+/* Smooth transitions for district highlighting */
+.leaflet-interactive {
+    transition: all 0.3s ease;
+}

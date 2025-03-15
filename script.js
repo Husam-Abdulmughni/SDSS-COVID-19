@@ -77,14 +77,11 @@ Promise.all([
                 mouseout: (e) => {
                     districtLayer.resetStyle(e.target);
                 },
+ changes                // Remove the click event that was auto-selecting districts
                 click: (e) => {
-                    const district = e.target.feature.properties.District;
-                    document.getElementById('districtSelect').value = district;
-                    const event = new Event('change');
-                    document.getElementById('districtSelect').dispatchEvent(event);
+                    layer.bindPopup(`<b>${e.target.feature.properties.District}</b>`).openPopup();
                 }
             });
-            layer.bindPopup(`<b>${feature.properties.District}</b>`);
         }
     }).addTo(map);
 
