@@ -20,7 +20,7 @@ L.control.layers(baseLayers).addTo(map);
 // Load Maharashtra districts GeoJSON
 let districtLayer;
 
-fetch('Data/Shapefile.geojson') // Update the path to your GeoJSON file
+fetch('data/Shapefile.geojson') // Update the path to your GeoJSON file
   .then(response => response.json())
   .then(data => {
     districtLayer = L.geoJSON(data, {
@@ -41,10 +41,12 @@ fetch('Data/Shapefile.geojson') // Update the path to your GeoJSON file
   .catch(error => console.error('Error loading GeoJSON:', error));
 
 // Handle district selection
-$('#districtSelect').change(function () {
-  const selectedDistrict = $(this).val();
+$('#submitBtn').click(function () {
+  const selectedDistrict = $('#districtSelect').val();
+  if (!selectedDistrict) return; // Do nothing if no district is selected
+
   districtLayer.eachLayer(layer => {
-    if (layer.feature.properties.District === selectedDistrict) { // Use 'District' (capitalized)
+    if (layer.feature.properties.District === selectedDistrict) {
       // Zoom to the selected district
       map.fitBounds(layer.getBounds());
       // Highlight the selected district
