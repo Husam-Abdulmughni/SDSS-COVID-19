@@ -11,10 +11,35 @@
     <div class="container">
         <h1>Spatial Decision Support System for COVID-19 Infection Prevention</h1>
         <div class="control-panel">
-            <label for="districtSelect">Select District:</label>
-            <select id="districtSelect">
-                <option value="">--Select a district--</option>
-            </select>
+            <div class="select-group">
+                <label for="districtSelect">Select District:</label>
+                <select id="districtSelect">
+                    <option value="">--Select a district--</option>
+                </select>
+            </div>
+            <div class="select-group">
+                <label for="monthSelect">Select Month:</label>
+                <select id="monthSelect">
+                    <option value="January">January</option>
+                    <option value="February">February</option>
+                    <option value="March">March</option>
+                    <option value="April">April</option>
+                    <option value="May">May</option>
+                    <option value="June">June</option>
+                    <option value="July">July</option>
+                    <option value="August">August</option>
+                    <option value="September">September</option>
+                    <option value="October">October</option>
+                    <option value="November">November</option>
+                    <option value="December">December</option>
+                </select>
+            </div>
+            <div class="select-group">
+                <label for="yearSelect">Select Year:</label>
+                <select id="yearSelect">
+                    <option value="2020">2020</option>
+                </select>
+            </div>
             <button id="submitBtn">Submit</button>
         </div>
         <div id="map"></div>
