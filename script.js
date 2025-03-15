@@ -1,4 +1,4 @@
-// Initialize the map
+// Initialize the map and set the view to Maharashtra
 const map = L.map('map').setView([19.7515, 75.7139], 6); // Centered on Maharashtra
 
 // Add base layers
@@ -17,32 +17,40 @@ const baseLayers = {
 };
 L.control.layers(baseLayers).addTo(map);
 
-// Load GeoJSON data for Maharashtra districts
+// Load Maharashtra districts GeoJSON
 let districtLayer;
 
-fetch('data/Shapefile.geojson') // Ensure this path points to your Maharashtra shapefile
+fetch('Data/Shapefile.geojson') // Update the path to your GeoJSON file
   .then(response => response.json())
   .then(data => {
     districtLayer = L.geoJSON(data, {
       style: { color: 'blue', weight: 2, fillOpacity: 0.1 },
       onEachFeature: (feature, layer) => {
-        const districtName = feature.properties.district; // Replace 'district' with the correct property name
+        const districtName = feature.properties.District; // Use 'District' (capitalized)
+        // Add district name to the dropdown
         $('#districtSelect').append(`<option value="${districtName}">${districtName}</option>`);
 
         // Add popup with district info
         layer.bindPopup(`<b>${districtName}</b>`);
       }
     }).addTo(map);
-  });
 
-// Handle district selection and highlight the selected district
-$('#submitBtn').click(function () {
-  const selectedDistrict = $('#districtSelect').val();
+    // Fit the map to the bounds of Maharashtra
+    map.fitBounds(districtLayer.getBounds());
+  })
+  .catch(error => console.error('Error loading GeoJSON:', error));
+
+// Handle district selection
+$('#districtSelect').change(function () {
+  const selectedDistrict = $(this).val();
   districtLayer.eachLayer(layer => {
-    if (layer.feature.properties.district === selectedDistrict) {
+    if (layer.feature.properties.District === selectedDistrict) { // Use 'District' (capitalized)
+      // Zoom to the selected district
       map.fitBounds(layer.getBounds());
+      // Highlight the selected district
       layer.setStyle({ color: 'red', weight: 4, fillOpacity: 0.3 });
     } else {
+      // Reset the style for other districts
       layer.setStyle({ color: 'blue', weight: 2, fillOpacity: 0.1 });
     }
   });
