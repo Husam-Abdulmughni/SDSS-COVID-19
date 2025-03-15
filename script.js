@@ -199,16 +199,29 @@ function getRiskColor(risk) {
 // Event Listeners
 // Remove the auto-update event listeners
 // Remove the DOMContentLoaded event listener as it's causing issues
-document.addEventListener('DOMContentLoaded', () => {
-    // Remove this entire block
-});
+document.removeEventListener('DOMContentLoaded', () => {});
 
 // Remove the existing event listener removal code
 ['districtSelect', 'monthSelect', 'yearSelect'].forEach(id => {
-    document.getElementById(id).removeEventListener('change');
+    const element = document.getElementById(id);
+    if (element) {
+        const clone = element.cloneNode(true);
+        element.parentNode.replaceChild(clone, element);
+    }
 });
 
-// Update the submit button event listener
+// Keep only one getRiskColor function and update colors to match the legend
+function getRiskColor(risk) {
+    switch(risk) {
+        case 'High': return '#ff0000';    // Red
+        case 'Medium': return '#ffff00';   // Yellow
+        case 'Low': return '#008000';      // Green
+        case 'No data': return '#808080';  // Gray
+        default: return '#3498db';         // Blue
+    }
+}
+
+// Update the button event listener
 document.getElementById('submitBtn').addEventListener('click', () => {
     const selectedDistrict = document.getElementById('districtSelect').value;
     const selectedMonth = document.getElementById('monthSelect').value;
@@ -218,18 +231,5 @@ document.getElementById('submitBtn').addEventListener('click', () => {
         alert('Please select a district');
         return;
     }
-    
-    // Call highlightDistrict with the selected values
     highlightDistrict(selectedDistrict, selectedMonth, selectedYear);
 });
-
-// Update the getRiskColor function to match the legend colors
-function getRiskColor(risk) {
-    switch(risk) {
-        case 'High': return '#ff0000';    // Bright red
-        case 'Medium': return '#ffff00';   // Yellow
-        case 'Low': return '#008000';      // Green
-        case 'No data': return '#808080';  // Gray
-        default: return '#3498db';
-    }
-}

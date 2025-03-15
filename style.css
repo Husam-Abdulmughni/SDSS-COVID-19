@@ -170,10 +170,33 @@ main {
     border-radius: 4px;
 }
 
-.legend-color.high { background-color: red; }
-.legend-color.medium { background-color: yellow; }
-.legend-color.low { background-color: green; }
-.legend-color.no-data { background-color: gray; }
+.legend-color.high { background-color: #ff0000; }    /* Bright red */
+.legend-color.medium { background-color: #ffff00; }  /* Yellow */
+.legend-color.low { background-color: #008000; }     /* Green */
+.legend-color.no-data { background-color: #808080; } /* Gray */
+
+.popup-content {
+    padding: 15px;
+    min-width: 200px;
+}
+
+.popup-content h3 {
+    color: #333;
+    margin-bottom: 12px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid #eee;
+    font-size: 16px;
+}
+
+.popup-content p {
+    margin: 8px 0;
+    line-height: 1.4;
+}
+
+.custom-popup .leaflet-popup-content-wrapper {
+    border-radius: 8px;
+    box-shadow: 0 3px 14px rgba(0,0,0,0.2);
+}
 
 footer {
     text-align: center;
