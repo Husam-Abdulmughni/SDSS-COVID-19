@@ -178,21 +178,34 @@ function getRiskColor(risk) {
 }
 
 // Event Listeners
+// Remove the auto-update event listeners
+['districtSelect', 'monthSelect', 'yearSelect'].forEach(id => {
+    document.getElementById(id).removeEventListener('change');
+});
+
+// Keep only the submit button event listener
 document.getElementById('submitBtn').addEventListener('click', () => {
     const selectedDistrict = document.getElementById('districtSelect').value;
     const selectedMonth = document.getElementById('monthSelect').value;
     const selectedYear = document.getElementById('yearSelect').value;
+    
+    if (!selectedDistrict) {
+        alert('Please select a district');
+        return;
+    }
     highlightDistrict(selectedDistrict, selectedMonth, selectedYear);
 });
 
-// Add change event listeners for auto-update
-['districtSelect', 'monthSelect', 'yearSelect'].forEach(id => {
-    document.getElementById(id).addEventListener('change', () => {
-        const selectedDistrict = document.getElementById('districtSelect').value;
-        const selectedMonth = document.getElementById('monthSelect').value;
-        const selectedYear = document.getElementById('yearSelect').value;
-        if (selectedDistrict && selectedMonth && selectedYear) {
-            highlightDistrict(selectedDistrict, selectedMonth, selectedYear);
-        }
-    });
-});
+// Modify the initial district layer setup
+districtLayer = L.geoJSON(baseData, {
+    style: {
+        color: '#2c3e50',
+        weight: 2,
+        fillOpacity: 0.2,
+        fillColor: '#3498db'
+    },
+    onEachFeature: (feature, layer) => {
+        // Only show district name on hover
+        layer.bindPopup(`<b>${feature.properties.District}</b>`);
+    }
+}).addTo(map);
