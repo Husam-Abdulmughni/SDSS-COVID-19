@@ -20,22 +20,34 @@ L.control.layers(baseLayers).addTo(map);
 // Variable to store the district layer
 let districtLayer;
 
-// Load the shapefile (GeoJSON) and extract district names
-fetch('Data/Shapefile.geojson')
+// Load the Maharashtra GeoJSON file and extract district names
+fetch('Data/Maharashtra_base.geojson')
   .then(response => response.json())
   .then(data => {
     // Extract district names from the GeoJSON file
-    const districts = data.features.map(feature => feature.properties.District);
+    const districts = data.features.map(feature => feature.properties.district);
+    
+    // Sort districts alphabetically
+    districts.sort();
+    
+    // Populate dropdown with district names
     populateDistrictDropdown(districts);
 
     // Add the district layer to the map
     districtLayer = L.geoJSON(data, {
-      style: { color: 'blue', weight: 2 }, // Default style for districts
+      style: {
+        color: 'blue',
+        weight: 2,
+        fillOpacity: 0.2
+      },
       onEachFeature: (feature, layer) => {
         // Add a popup with the district name
-        layer.bindPopup(`<b>${feature.properties.District}</b>`);
+        layer.bindPopup(`<b>${feature.properties.district}</b>`);
       }
     }).addTo(map);
+
+    // Fit the map view to Maharashtra boundaries
+    map.fitBounds(districtLayer.getBounds());
   })
   .catch(error => console.error('Error loading GeoJSON:', error));
 
@@ -50,18 +62,25 @@ function populateDistrictDropdown(districts) {
   });
 }
 
-// Function to highlight the selected district
+// Update the highlightDistrict function
 function highlightDistrict(selectedDistrict) {
   if (districtLayer) {
-    // Reset the style of all districts
-    districtLayer.setStyle({ color: 'blue', weight: 2 });
+    districtLayer.setStyle({
+      color: 'blue',
+      weight: 2,
+      fillOpacity: 0.2
+    });
   }
 
   // Highlight the selected district
   districtLayer.eachLayer(layer => {
-    if (layer.feature.properties.District === selectedDistrict) {
-      layer.setStyle({ color: 'red', weight: 4 }); // Highlight style
-      map.fitBounds(layer.getBounds()); // Zoom to the selected district
+    if (layer.feature.properties.district === selectedDistrict) {
+      layer.setStyle({
+        color: 'red',
+        weight: 4,
+        fillOpacity: 0.4
+      });
+      map.fitBounds(layer.getBounds());
     }
   });
 }
