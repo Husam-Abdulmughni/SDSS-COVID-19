@@ -19,8 +19,9 @@ L.control.layers(baseLayers).addTo(map);
 
 // Load study area GeoJSON
 let studyAreaLayer;
+let riskLayer;
 
-fetch('data/Shapefile.geojson') // Update the path to your GeoJSON file
+fetch('C:/Users/kannan/OneDrive/Documents/GitHub/SDSS-COVID-19/Data/Maharashtra_base.geojson') // Update the path to your GeoJSON file
   .then(response => response.json())
   .then(data => {
     studyAreaLayer = L.geoJSON(data, {
@@ -43,17 +44,39 @@ fetch('data/Shapefile.geojson') // Update the path to your GeoJSON file
 // Handle district selection
 $('#submitBtn').click(function () {
   const selectedDistrict = $('#districtSelect').val();
-  if (!selectedDistrict) return; // Do nothing if no district is selected
+  const selectedMonth = $('#monthSelect').val();
+  const selectedYear = $('#yearSelect').val();
 
-  studyAreaLayer.eachLayer(layer => {
-    if (layer.feature.properties.District.trim() === selectedDistrict) {
-      // Zoom to the selected district
-      map.fitBounds(layer.getBounds());
-      // Highlight the selected district
-      layer.setStyle({ color: 'red', weight: 4, fillOpacity: 0.3 });
-    } else {
-      // Reset the style for other districts
-      layer.setStyle({ color: 'green', weight: 2, fillOpacity: 0.1 });
-    }
-  });
+  if (!selectedDistrict || !selectedMonth || !selectedYear) return; // Do nothing if no district, month, or year is selected
+
+  // Load the risk map GeoJSON file based on the selected year
+  fetch(`C:/Users/kannan/OneDrive/Documents/GitHub/SDSS-COVID-19/Data/Maharashtra_Riskmap_${selectedYear}.geojson`)
+    .then(response => response.json())
+    .then(data => {
+      if (riskLayer) {
+        map.removeLayer(riskLayer);
+      }
+
+      riskLayer = L.geoJSON(data, {
+        style: (feature) => {
+          const riskLevel = feature.properties[`risk_${selectedMonth}`];
+          let color = 'green'; // Default to low risk
+          if (riskLevel === 'medium') {
+            color = 'yellow';
+          } else if (riskLevel === 'high') {
+            color = 'red';
+          }
+          return { color: color, weight: 2, fillOpacity: 0.5 };
+        },
+        onEachFeature: (feature, layer) => {
+          if (feature.properties.District.trim() === selectedDistrict) {
+            // Zoom to the selected district
+            map.fitBounds(layer.getBounds());
+            // Highlight the selected district
+            layer.setStyle({ weight: 4, fillOpacity: 0.7 });
+          }
+        }
+      }).addTo(map);
+    })
+    .catch(error => console.error('Error loading risk map GeoJSON:', error));
 });
