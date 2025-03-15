@@ -1,36 +1,51 @@
 // Initialize the map
-const map = L.map('map').setView([20.5937, 78.9629], 5); // Centered on India
+const map = L.map('map').setView([19.7515, 75.7139], 7);
 
 // Add base layers
 const osm = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-  attribution: '© OpenStreetMap contributors'
+    attribution: '© OpenStreetMap contributors'
 }).addTo(map);
 
 const satellite = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
-  attribution: '© Esri'
+    attribution: '© Esri'
 });
 
 // Add layer control
 const baseLayers = {
-  "OpenStreetMap": osm,
-  "Satellite": satellite
+    "OpenStreetMap": osm,
+    "Satellite": satellite
 };
 L.control.layers(baseLayers).addTo(map);
 
-// Variable to store the district layer
+// Variables to store layers and data
 let districtLayer;
 let riskDataByYear = {};
+let currentPopup = null;
 
 // Load all GeoJSON files
 Promise.all([
-    fetch('Data/Maharashtra_base.geojson').then(response => response.json()),
-    fetch('Data/Maharashtra_Riskmap_2020.geojson').then(response => response.json()),
-    fetch('Data/Maharashtra_Riskmap_2021.geojson').then(response => response.json()),
-    fetch('Data/Maharashtra_Riskmap_2022.geojson').then(response => response.json()),
-    fetch('Data/Maharashtra_Riskmap_2023.geojson').then(response => response.json())
+    fetch('Data/Maharashtra_base.geojson').then(response => {
+        if (!response.ok) throw new Error('Failed to load base map');
+        return response.json();
+    }),
+    fetch('Data/Maharashtra_Riskmap_2020.geojson').then(response => {
+        if (!response.ok) throw new Error('Failed to load 2020 data');
+        return response.json();
+    }),
+    fetch('Data/Maharashtra_Riskmap_2021.geojson').then(response => {
+        if (!response.ok) throw new Error('Failed to load 2021 data');
+        return response.json();
+    }),
+    fetch('Data/Maharashtra_Riskmap_2022.geojson').then(response => {
+        if (!response.ok) throw new Error('Failed to load 2022 data');
+        return response.json();
+    }),
+    fetch('Data/Maharashtra_Riskmap_2023.geojson').then(response => {
+        if (!response.ok) throw new Error('Failed to load 2023 data');
+        return response.json();
+    })
 ])
 .then(([baseData, risk2020, risk2021, risk2022, risk2023]) => {
-    // Store risk data by year
     riskDataByYear = {
         '2020': risk2020,
         '2021': risk2021,
@@ -38,21 +53,37 @@ Promise.all([
         '2023': risk2023
     };
     
-    // Extract district names from the base GeoJSON file
     const districts = baseData.features.map(feature => feature.properties.District);
     districts.sort();
     
-    // Populate dropdown with district names
     populateDistrictDropdown(districts);
 
-    // Add the district layer to the map
     districtLayer = L.geoJSON(baseData, {
         style: {
-            color: 'blue',
+            color: '#2c3e50',
             weight: 2,
-            fillOpacity: 0.2
+            fillOpacity: 0.2,
+            fillColor: '#3498db'
         },
         onEachFeature: (feature, layer) => {
+            layer.on({
+                mouseover: (e) => {
+                    const layer = e.target;
+                    layer.setStyle({
+                        weight: 3,
+                        fillOpacity: 0.3
+                    });
+                },
+                mouseout: (e) => {
+                    districtLayer.resetStyle(e.target);
+                },
+                click: (e) => {
+                    const district = e.target.feature.properties.District;
+                    document.getElementById('districtSelect').value = district;
+                    const event = new Event('change');
+                    document.getElementById('districtSelect').dispatchEvent(event);
+                }
+            });
             layer.bindPopup(`<b>${feature.properties.District}</b>`);
         }
     }).addTo(map);
@@ -61,32 +92,35 @@ Promise.all([
 })
 .catch(error => {
     console.error('Error loading data:', error);
-    alert('Error loading data. Please check the console for details.');
+    alert(`Error: ${error.message}. Please check your internet connection and try again.`);
 });
 
-// Function to populate the district dropdown
 function populateDistrictDropdown(districts) {
-  const districtSelect = document.getElementById('districtSelect');
-  districts.forEach(district => {
-    const option = document.createElement('option');
-    option.value = district;
-    option.textContent = district;
-    districtSelect.appendChild(option);
-  });
+    const districtSelect = document.getElementById('districtSelect');
+    districtSelect.innerHTML = '<option value="">--Select a district--</option>';
+    districts.forEach(district => {
+        const option = document.createElement('option');
+        option.value = district;
+        option.textContent = district;
+        districtSelect.appendChild(option);
+    });
 }
 
-// Update the highlightDistrict function
 function highlightDistrict(selectedDistrict, selectedMonth, selectedYear) {
+    if (!selectedDistrict) {
+        alert('Please select a district');
+        return;
+    }
+
     if (!districtLayer || !riskDataByYear[selectedYear]) return;
 
-    // Reset all districts style
     districtLayer.setStyle({
-        color: 'blue',
+        color: '#2c3e50',
         weight: 2,
-        fillOpacity: 0.2
+        fillOpacity: 0.2,
+        fillColor: '#3498db'
     });
 
-    // Find risk data for selected district and year
     const districtRiskData = riskDataByYear[selectedYear].features.find(
         feature => feature.properties.District === selectedDistrict
     );
@@ -95,53 +129,73 @@ function highlightDistrict(selectedDistrict, selectedMonth, selectedYear) {
         const risk = districtRiskData.properties[selectedMonth];
         let displayRisk = risk;
         
-        // Special handling for 2020's first three months
         if (selectedYear === '2020' && ['January', 'February', 'March'].includes(selectedMonth)) {
             displayRisk = 'No data';
         }
 
         const riskColor = getRiskColor(displayRisk);
 
-        // Highlight the selected district
         districtLayer.eachLayer(layer => {
             if (layer.feature.properties.District === selectedDistrict) {
                 layer.setStyle({
-                    color: riskColor,
+                    color: '#34495e',
                     weight: 4,
                     fillColor: riskColor,
-                    fillOpacity: 0.6
+                    fillOpacity: 0.7
                 });
                 
-                // Create popup content
+                if (currentPopup) {
+                    map.closePopup(currentPopup);
+                }
+
                 const popupContent = `
-                    <b>${selectedDistrict}</b><br>
-                    Year: ${selectedYear}<br>
-                    Month: ${selectedMonth}<br>
-                    Risk Level: ${displayRisk}
+                    <div class="popup-content">
+                        <h3>${selectedDistrict}</h3>
+                        <p><strong>Year:</strong> ${selectedYear}</p>
+                        <p><strong>Month:</strong> ${selectedMonth}</p>
+                        <p><strong>Risk Level:</strong> <span style="color:${riskColor}">${displayRisk}</span></p>
+                    </div>
                 `;
                 
-                layer.bindPopup(popupContent).openPopup();
-                map.fitBounds(layer.getBounds());
+                currentPopup = layer.bindPopup(popupContent, {
+                    closeButton: true,
+                    className: 'custom-popup'
+                }).openPopup();
+
+                map.fitBounds(layer.getBounds(), {
+                    padding: [50, 50]
+                });
             }
         });
     }
 }
 
-// Update getRiskColor function to handle 'no data' case
 function getRiskColor(risk) {
     switch(risk) {
-        case 'High': return 'red';
-        case 'Medium': return 'yellow';
-        case 'Low': return 'green';
-        case 'No data': return 'gray';
-        default: return 'blue';
+        case 'High': return '#e74c3c';
+        case 'Medium': return '#f1c40f';
+        case 'Low': return '#2ecc71';
+        case 'No data': return '#95a5a6';
+        default: return '#3498db';
     }
 }
 
-// Update the submit button click handler
+// Event Listeners
 document.getElementById('submitBtn').addEventListener('click', () => {
     const selectedDistrict = document.getElementById('districtSelect').value;
     const selectedMonth = document.getElementById('monthSelect').value;
     const selectedYear = document.getElementById('yearSelect').value;
     highlightDistrict(selectedDistrict, selectedMonth, selectedYear);
+});
+
+// Add change event listeners for auto-update
+['districtSelect', 'monthSelect', 'yearSelect'].forEach(id => {
+    document.getElementById(id).addEventListener('change', () => {
+        const selectedDistrict = document.getElementById('districtSelect').value;
+        const selectedMonth = document.getElementById('monthSelect').value;
+        const selectedYear = document.getElementById('yearSelect').value;
+        if (selectedDistrict && selectedMonth && selectedYear) {
+            highlightDistrict(selectedDistrict, selectedMonth, selectedYear);
+        }
+    });
 });
