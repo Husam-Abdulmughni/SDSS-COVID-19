@@ -22,7 +22,7 @@ let districtLayer;
 let riskDataByYear = {};
 let currentPopup = null;
 
-// Load all GeoJSON files
+// Load all GeoJSON files// Fix the Promise chain syntax
 Promise.all([
     fetch('Data/Maharashtra_base.geojson').then(response => {
         if (!response.ok) throw new Error('Failed to load base map');
@@ -58,7 +58,6 @@ Promise.all([
     
     populateDistrictDropdown(districts);
 
-    // Initialize district layer here only
     districtLayer = L.geoJSON(baseData, {
         style: {
             color: '#2c3e50',
@@ -86,12 +85,22 @@ Promise.all([
     }).addTo(map);
 
     map.fitBounds(districtLayer.getBounds());
-});
-
-// Remove the duplicate district layer initialization at the bottom
+})
 .catch(error => {
     console.error('Error loading data:', error);
     alert(`Error: ${error.message}. Please check your internet connection and try again.`);
+});
+
+// Fix the event listener removal
+document.addEventListener('DOMContentLoaded', () => {
+    const inputs = ['districtSelect', 'monthSelect', 'yearSelect'];
+    inputs.forEach(id => {
+        const element = document.getElementById(id);
+        if (element) {
+            const clone = element.cloneNode(true);
+            element.parentNode.replaceChild(clone, element);
+        }
+    });
 });
 
 function populateDistrictDropdown(districts) {

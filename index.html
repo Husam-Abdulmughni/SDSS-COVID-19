@@ -20,16 +20,17 @@
         </header>
         
         <main>
+            <!-- Add this inside your form or control panel -->
             <div class="control-panel">
                 <div class="select-group">
-                    <label for="districtSelect"><i class="fas fa-map-marker-alt"></i> Select District:</label>
-                    <select id="districtSelect">
+                    <label for="districtSelect">Select District:</label>
+                    <select id="districtSelect" required>
                         <option value="">--Select a district--</option>
                     </select>
                 </div>
                 <div class="select-group">
-                    <label for="monthSelect"><i class="fas fa-calendar"></i> Select Month:</label>
-                    <select id="monthSelect">
+                    <label for="monthSelect">Select Month:</label>
+                    <select id="monthSelect" required>
                         <option value="January">January</option>
                         <option value="February">February</option>
                         <option value="March">March</option>
@@ -45,15 +46,15 @@
                     </select>
                 </div>
                 <div class="select-group">
-                    <label for="yearSelect"><i class="fas fa-clock"></i> Select Year:</label>
-                    <select id="yearSelect">
+                    <label for="yearSelect">Select Year:</label>
+                    <select id="yearSelect" required>
                         <option value="2020">2020</option>
                         <option value="2021">2021</option>
                         <option value="2022">2022</option>
                         <option value="2023">2023</option>
                     </select>
                 </div>
-                <button id="submitBtn"><i class="fas fa-search"></i> View Risk Level</button>
+                <button id="submitBtn" type="button">View Risk Level</button>
             </div>
 
             <div class="map-container">
