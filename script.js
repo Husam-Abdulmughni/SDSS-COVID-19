@@ -75,16 +75,6 @@ function populateDistrictDropdown(districts) {
   });
 }
 
-// Function to get risk color
-function getRiskColor(risk) {
-    switch(risk) {
-        case 'High': return 'red';
-        case 'Medium': return 'yellow';
-        case 'Low': return 'green';
-        default: return 'blue';
-    }
-}
-
 // Update the highlightDistrict function
 function highlightDistrict(selectedDistrict, selectedMonth, selectedYear) {
     if (!districtLayer || !riskDataByYear[selectedYear]) return;
@@ -103,7 +93,14 @@ function highlightDistrict(selectedDistrict, selectedMonth, selectedYear) {
 
     if (districtRiskData) {
         const risk = districtRiskData.properties[selectedMonth];
-        const riskColor = getRiskColor(risk);
+        let displayRisk = risk;
+        
+        // Special handling for 2020's first three months
+        if (selectedYear === '2020' && ['January', 'February', 'March'].includes(selectedMonth)) {
+            displayRisk = 'No data';
+        }
+
+        const riskColor = getRiskColor(displayRisk);
 
         // Highlight the selected district
         districtLayer.eachLayer(layer => {
@@ -114,15 +111,30 @@ function highlightDistrict(selectedDistrict, selectedMonth, selectedYear) {
                     fillColor: riskColor,
                     fillOpacity: 0.6
                 });
-                layer.bindPopup(`
+                
+                // Create popup content
+                const popupContent = `
                     <b>${selectedDistrict}</b><br>
                     Year: ${selectedYear}<br>
                     Month: ${selectedMonth}<br>
-                    Risk Level: ${risk || 'No data'}
-                `).openPopup();
+                    Risk Level: ${displayRisk}
+                `;
+                
+                layer.bindPopup(popupContent).openPopup();
                 map.fitBounds(layer.getBounds());
             }
         });
+    }
+}
+
+// Update getRiskColor function to handle 'no data' case
+function getRiskColor(risk) {
+    switch(risk) {
+        case 'High': return 'red';
+        case 'Medium': return 'yellow';
+        case 'Low': return 'green';
+        case 'No data': return 'gray';
+        default: return 'blue';
     }
 }
 

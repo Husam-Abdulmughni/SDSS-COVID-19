@@ -46,7 +46,28 @@
             </div>
             <button id="submitBtn">Submit</button>
         </div>
-        <div id="map"></div>
+        <div class="map-container">
+            <div id="map"></div>
+            <div class="legend">
+                <h4>Risk Levels</h4>
+                <div class="legend-item">
+                    <span class="legend-color high"></span>
+                    <span>High Risk</span>
+                </div>
+                <div class="legend-item">
+                    <span class="legend-color medium"></span>
+                    <span>Medium Risk</span>
+                </div>
+                <div class="legend-item">
+                    <span class="legend-color low"></span>
+                    <span>Low Risk</span>
+                </div>
+                <div class="legend-item">
+                    <span class="legend-color no-data"></span>
+                    <span>No Data</span>
+                </div>
+            </div>
+        </div>
     </div>
 
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>

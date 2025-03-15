@@ -57,11 +57,76 @@ h1 {
     background-color: #0056b3;
 }
 
-#map {
+.map-container {
+    position: relative;
     width: 100%;
     height: calc(100vh - 150px);
     min-height: 500px;
+}
+
+#map {
+    width: 100%;
+    height: 100%;
     border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+.legend {
+    position: absolute;
+    bottom: 20px;
+    right: 20px;
+    background: white;
+    padding: 10px;
+    border-radius: 4px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    z-index: 1000;
+}
+
+.legend h4 {
+    margin: 0 0 10px 0;
+    font-size: 14px;
+}
+
+.legend-item {
+    display: flex;
+    align-items: center;
+    margin-bottom: 5px;
+}
+
+.legend-color {
+    width: 20px;
+    height: 20px;
+    margin-right: 8px;
+    border: 1px solid #ccc;
+    border-radius: 3px;
+}
+
+.legend-color.high { background-color: red; }
+.legend-color.medium { background-color: yellow; }
+.legend-color.low { background-color: green; }
+.legend-color.no-data { background-color: gray; }
+
+/* Update control panel styles */
+.control-panel {
+    background: white;
+    padding: 15px;
+    border-radius: 4px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    margin-bottom: 20px;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .legend {
+        bottom: 10px;
+        right: 10px;
+        font-size: 12px;
+    }
+    
+    .legend-color {
+        width: 15px;
+        height: 15px;
+    }
 }
 
 @media (max-width: 768px) {
