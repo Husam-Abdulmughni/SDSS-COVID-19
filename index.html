@@ -4,89 +4,71 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Spatial Decision Support System for COVID-19</title>
-    <!-- Favicon -->
-    <link rel="icon" type="image/x-icon" href="favicon.ico">
-    <!-- Leaflet CSS -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
-    <!-- Custom CSS -->
     <link rel="stylesheet" href="style.css">
-    <!-- Font Awesome -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 <body>
     <div class="container">
-        <header>
-            <h1><i class="fas fa-virus"></i> Spatial Decision Support System for COVID-19 Infection Prevention</h1>
-        </header>
-        
-        <main>
-            <!-- Add this inside your form or control panel -->
-            <div class="control-panel">
-                <div class="select-group">
-                    <label for="districtSelect">Select District:</label>
-                    <select id="districtSelect" required>
-                        <option value="">--Select a district--</option>
-                    </select>
-                </div>
-                <div class="select-group">
-                    <label for="monthSelect">Select Month:</label>
-                    <select id="monthSelect" required>
-                        <option value="January">January</option>
-                        <option value="February">February</option>
-                        <option value="March">March</option>
-                        <option value="April">April</option>
-                        <option value="May">May</option>
-                        <option value="June">June</option>
-                        <option value="July">July</option>
-                        <option value="August">August</option>
-                        <option value="September">September</option>
-                        <option value="October">October</option>
-                        <option value="November">November</option>
-                        <option value="December">December</option>
-                    </select>
-                </div>
-                <div class="select-group">
-                    <label for="yearSelect">Select Year:</label>
-                    <select id="yearSelect" required>
-                        <option value="2020">2020</option>
-                        <option value="2021">2021</option>
-                        <option value="2022">2022</option>
-                        <option value="2023">2023</option>
-                    </select>
-                </div>
-                <button id="submitBtn" type="button">View Risk Level</button>
+        <h1>Spatial Decision Support System for COVID-19 Infection Prevention</h1>
+        <div class="control-panel">
+            <div class="select-group">
+                <label for="districtSelect">Select District:</label>
+                <select id="districtSelect">
+                    <option value="">--Select a district--</option>
+                </select>
             </div>
-
-            <div class="map-container">
-                <div id="map"></div>
-                <div class="legend">
-                    <h4><i class="fas fa-info-circle"></i> Risk Levels</h4>
-                    <div class="legend-item">
-                        <span class="legend-color high"></span>
-                        <span>High Risk</span>
-                    </div>
-                    <div class="legend-item">
-                        <span class="legend-color medium"></span>
-                        <span>Medium Risk</span>
-                    </div>
-                    <div class="legend-item">
-                        <span class="legend-color low"></span>
-                        <span>Low Risk</span>
-                    </div>
-                    <div class="legend-item">
-                        <span class="legend-color no-data"></span>
-                        <span>No Data</span>
-                    </div>
+            <div class="select-group">
+                <label for="monthSelect">Select Month:</label>
+                <select id="monthSelect">
+                    <option value="January">January</option>
+                    <option value="February">February</option>
+                    <option value="March">March</option>
+                    <option value="April">April</option>
+                    <option value="May">May</option>
+                    <option value="June">June</option>
+                    <option value="July">July</option>
+                    <option value="August">August</option>
+                    <option value="September">September</option>
+                    <option value="October">October</option>
+                    <option value="November">November</option>
+                    <option value="December">December</option>
+                </select>
+            </div>
+            <div class="select-group">
+                <label for="yearSelect">Select Year:</label>
+                <select id="yearSelect">
+                    <option value="2020">2020</option>
+                    <option value="2021">2021</option>
+                    <option value="2022">2022</option>
+                    <option value="2023">2023</option>
+                </select>
+            </div>
+            <button id="submitBtn">Submit</button>
+        </div>
+        <div class="map-container">
+            <div id="map"></div>
+            <div class="legend">
+                <h4>Risk Levels</h4>
+                <div class="legend-item">
+                    <span class="legend-color high"></span>
+                    <span>High Risk</span>
+                </div>
+                <div class="legend-item">
+                    <span class="legend-color medium"></span>
+                    <span>Medium Risk</span>
+                </div>
+                <div class="legend-item">
+                    <span class="legend-color low"></span>
+                    <span>Low Risk</span>
+                </div>
+                <div class="legend-item">
+                    <span class="legend-color no-data"></span>
+                    <span>No Data</span>
                 </div>
             </div>
-        </main>
-
-        <footer>
-            <p>&copy; 2024 COVID-19 Risk Assessment System</p>
-        </footer>
+        </div>
     </div>
 
-    <!-- Scripts -->
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <script src="script.js"></script>
 </body>
