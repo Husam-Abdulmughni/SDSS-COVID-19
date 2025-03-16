@@ -21,7 +21,17 @@ L.control.layers(baseLayers).addTo(map);
 let districtLayer;
 let riskDataByYear = {};
 
+// Add loading indicator
+const loadingIndicator = document.getElementById('loading');
+if (!loadingIndicator) {
+    const loader = document.createElement('div');
+    loader.id = 'loading';
+    loader.innerHTML = 'Loading data...';
+    document.body.appendChild(loader);
+}
+
 // Load all GeoJSON files
+loadingIndicator.style.display = 'block';
 Promise.all([
     fetch('Data/Maharashtra_base.geojson').then(response => response.json()),
     fetch('Data/Maharashtra_Riskmap_2020.geojson').then(response => response.json()),
@@ -30,6 +40,7 @@ Promise.all([
     fetch('Data/Maharashtra_Riskmap_2023.geojson').then(response => response.json())
 ])
 .then(([baseData, risk2020, risk2021, risk2022, risk2023]) => {
+    loadingIndicator.style.display = 'none';
     // Store risk data by year
     riskDataByYear = {
         '2020': risk2020,
@@ -60,8 +71,9 @@ Promise.all([
     map.fitBounds(districtLayer.getBounds());
 })
 .catch(error => {
+    loadingIndicator.style.display = 'none';
     console.error('Error loading data:', error);
-    alert('Error loading data. Please check the console for details.');
+    alert('Error loading data. Please try refreshing the page.');
 });
 
 // Function to populate the district dropdown
