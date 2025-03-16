@@ -195,6 +195,16 @@ function populateDistrictDropdown(districts) {
     });
 }
 
+function getRiskColor(risk) {
+    switch(risk) {
+        case 'High': return '#ff0000';    // Red
+        case 'Medium': return '#ffff00';   // Yellow
+        case 'Low': return '#008000';      // Green
+        case 'No data': return '#808080';  // Gray
+        default: return '#3498db';         // Blue
+    }
+}
+
 function highlightDistrict(selectedDistrict, selectedMonth, selectedYear) {
     if (!selectedDistrict) {
         alert('Please select a district');
@@ -223,7 +233,6 @@ function highlightDistrict(selectedDistrict, selectedMonth, selectedYear) {
 
         const riskColor = getRiskColor(displayRisk);
 
-        // Highlight selected district and show popup
         districtLayer.eachLayer(layer => {
             if (layer.feature.properties.District === selectedDistrict) {
                 layer.setStyle({
