@@ -13,13 +13,13 @@
         <div class="control-panel">
             <div class="select-group">
                 <label for="districtSelect">Select District:</label>
-                <select id="districtSelect" aria-label="Select District">
+                <select id="districtSelect">
                     <option value="">--Select a district--</option>
                 </select>
             </div>
             <div class="select-group">
                 <label for="monthSelect">Select Month:</label>
-                <select id="monthSelect" aria-label="Select Month">
+                <select id="monthSelect">
                     <option value="January">January</option>
                     <option value="February">February</option>
                     <option value="March">March</option>
@@ -36,14 +36,14 @@
             </div>
             <div class="select-group">
                 <label for="yearSelect">Select Year:</label>
-                <select id="yearSelect" aria-label="Select Year">
+                <select id="yearSelect">
                     <option value="2020">2020</option>
                     <option value="2021">2021</option>
                     <option value="2022">2022</option>
                     <option value="2023">2023</option>
                 </select>
             </div>
-            <button id="submitBtn" aria-label="Submit Selection">Submit</button>
+            <button id="submitBtn">Submit</button>
         </div>
         <div class="map-container">
             <div id="map"></div>
@@ -66,11 +66,6 @@
                     <span>No Data</span>
                 </div>
             </div>
-        </div>
-        <!-- Loading Spinner -->
-        <div id="loadingSpinner" class="loading-spinner" style="display: none;">
-            <div class="spinner"></div>
-            <p>Loading data...</p>
         </div>
     </div>
 
