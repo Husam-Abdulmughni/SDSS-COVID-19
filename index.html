@@ -43,10 +43,8 @@
                     <option value="2023">2023</option>
                 </select>
             </div>
-            <button id="submitBtn">Submit</button>
+            <button id="submitBtn" aria-label="Submit Selection">Submit</button>
         </div>
-        <div id="loadingSpinner" class="loading-spinner"></div>
-        <div id="messageArea" class="message-area"></div>
         <div class="map-container">
             <div id="map"></div>
             <div class="legend">
@@ -68,6 +66,11 @@
                     <span>No Data</span>
                 </div>
             </div>
+        </div>
+        <!-- Loading Spinner -->
+        <div id="loadingSpinner" class="loading-spinner" style="display: none;">
+            <div class="spinner"></div>
+            <p>Loading data...</p>
         </div>
     </div>
 
