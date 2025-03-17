@@ -21,7 +21,29 @@ L.control.layers(baseLayers).addTo(map);
 let districtLayer;
 let riskDataByYear = {};
 
+// Show loading spinner
+function showLoadingSpinner() {
+    document.getElementById('loadingSpinner').style.display = 'block';
+}
+
+// Hide loading spinner
+function hideLoadingSpinner() {
+    document.getElementById('loadingSpinner').style.display = 'none';
+}
+
+// Show message
+function showMessage(message, isError = false) {
+    const messageArea = document.getElementById('messageArea');
+    messageArea.textContent = message;
+    messageArea.className = `message-area ${isError ? 'error' : 'success'}`;
+    messageArea.style.display = 'block';
+    setTimeout(() => {
+        messageArea.style.display = 'none';
+    }, 5000);
+}
+
 // Load all GeoJSON files
+showLoadingSpinner();
 Promise.all([
     fetch('Data/Maharashtra_base.geojson').then(response => response.json()),
     fetch('Data/Maharashtra_Riskmap_2020.geojson').then(response => response.json()),
@@ -58,10 +80,12 @@ Promise.all([
     }).addTo(map);
 
     map.fitBounds(districtLayer.getBounds());
+    hideLoadingSpinner();
 })
 .catch(error => {
     console.error('Error loading data:', error);
-    alert('Error loading data. Please check the console for details.');
+    hideLoadingSpinner();
+    showMessage('Error loading data. Please try again later.', true);
 });
 
 // Function to populate the district dropdown
@@ -77,7 +101,10 @@ function populateDistrictDropdown(districts) {
 
 // Update the highlightDistrict function
 function highlightDistrict(selectedDistrict, selectedMonth, selectedYear) {
-    if (!districtLayer || !riskDataByYear[selectedYear]) return;
+    if (!districtLayer || !riskDataByYear[selectedYear]) {
+        showMessage('No data available for the selected criteria.', true);
+        return;
+    }
 
     // Reset all districts style
     districtLayer.setStyle({
@@ -124,6 +151,8 @@ function highlightDistrict(selectedDistrict, selectedMonth, selectedYear) {
                 map.fitBounds(layer.getBounds());
             }
         });
+    } else {
+        showMessage('No data available for the selected district.', true);
     }
 }
 
@@ -143,5 +172,11 @@ document.getElementById('submitBtn').addEventListener('click', () => {
     const selectedDistrict = document.getElementById('districtSelect').value;
     const selectedMonth = document.getElementById('monthSelect').value;
     const selectedYear = document.getElementById('yearSelect').value;
+
+    if (!selectedDistrict) {
+        showMessage('Please select a district.', true);
+        return;
+    }
+
     highlightDistrict(selectedDistrict, selectedMonth, selectedYear);
 });

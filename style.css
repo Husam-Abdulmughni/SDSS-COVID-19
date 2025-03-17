@@ -106,13 +106,38 @@ h1 {
 .legend-color.low { background-color: green; }
 .legend-color.no-data { background-color: gray; }
 
-/* Update control panel styles */
-.control-panel {
-    background: white;
-    padding: 15px;
+.loading-spinner {
+    border: 4px solid #f3f3f3;
+    border-top: 4px solid #007bff;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    animation: spin 1s linear infinite;
+    margin: 20px auto;
+    display: none;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+.message-area {
+    margin: 20px 0;
+    padding: 10px;
     border-radius: 4px;
-    box-shadow: 0 0 10px rgba(0,0,0,0.1);
-    margin-bottom: 20px;
+    text-align: center;
+    display: none;
+}
+
+.message-area.success {
+    background-color: #d4edda;
+    color: #155724;
+}
+
+.message-area.error {
+    background-color: #f8d7da;
+    color: #721c24;
 }
 
 /* Responsive adjustments */
@@ -127,9 +152,7 @@ h1 {
         width: 15px;
         height: 15px;
     }
-}
 
-@media (max-width: 768px) {
     .control-panel {
         flex-direction: column;
         align-items: stretch;
