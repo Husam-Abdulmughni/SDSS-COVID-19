@@ -79,6 +79,7 @@ Promise.all([
         }
     }).addTo(map);
 
+    // Fit the map to the bounds of the district layer
     map.fitBounds(districtLayer.getBounds());
     hideLoadingSpinner();
 })
